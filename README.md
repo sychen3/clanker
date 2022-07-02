@@ -12,7 +12,7 @@ Version History
                  Dittosalute and fronks2 responses added.
                  Standard updates to the blacklist.
 
-0.5, 20220702:   Initial version (no github upload): disciplines user upon any instance of banned activity.
+0.5, 20220701:   Initial version (no github upload): disciplines user upon any instance of banned activity.
                 Includes sending messages containing banned words or changing activity status to a banned
                 activity.
                  on_member_update functionality added (checks user activity status whenever a user updates).
