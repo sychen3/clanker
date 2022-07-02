@@ -17,3 +17,6 @@ Version History
                 activity.
                  on_member_update functionality added (checks user activity status whenever a user updates).
                  bot.run() commands disabled.
+
+0.0.1, 20220610*: Actual date unknown, estimated 10 Jun 2022. Initial code copied from Rapptz's sample bot.
+                 No functions working, only attempting to understand the code.
