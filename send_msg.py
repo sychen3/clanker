@@ -31,7 +31,7 @@ def get_channel(path, bot):
         return
 
 def find_msg(id):
-    pass
+    return None
 
 @bot.event
 async def on_ready():
