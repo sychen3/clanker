@@ -26,9 +26,15 @@ def get_channel(path, bot):
         return bot.get_channel(int(path))
     else:
         separator_index = path.find('/')
-        server = path[:separator_index]
-        channel = path[separator_index + 1:]
-        return
+        serverName = path[:separator_index]
+				if serverName not in serverMap:
+						print(f"could not find server {server}")
+						return None
+				guild = bot.get_guild(serverMap[serverName])
+        channelName = path[separator_index + 1:]
+				for channel in guild.channels:
+						if channel.name == channelName:
+								return channel
 
 def find_msg(id):
     return None
@@ -36,12 +42,7 @@ def find_msg(id):
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user} (ID: {bot.user.id})\n------")
-
-    channel = bot.get_channel(1014608064646746112)
-    print(channel)
-
-    if channel: await channel.send(msg)
-
+    await channel.send(msg)
     await bot.close()
 
 (channel, msg, reply) = None, None, None
