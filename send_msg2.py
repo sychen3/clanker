@@ -16,9 +16,32 @@ class SingleMessageSender(discord.Client):
 
         await self.close()  # Close the HTTP client again
 
+def parse_args(argv):
+    argv.pop(0)
+    channel, msg, reply = None, None, None
+    while argv:
+        curr_arg = argv.pop(0)
+        # stops the count before we try to parse a missing arg
+        if not argv: return (None, None, None)
+        elif curr_arg == "-c":
+            channel = get_channel(argv.pop(0))
+        elif curr_arg == "-m":
+            msg = argv.pop(0)
+        elif curr_arg == "-r":
+            reply = find_msg(argv.pop(0))
+    return (channel, msg, reply)
+
+def get_channel(path):
+    return 1011851229716037722 if path == "channel5" else 999415862069039144
+    # TODO: add the rest of the path parser here, and then document
+    # how path input should work
+
+def find_msg(id):
+    return None
 
 async def main():
-    client = SingleMessageSender('Hello, World', 999415862069039144)
+    (channel, msg, reply) = parse_args(sys.argv)
+    client = SingleMessageSender(msg, channel)
     await client.send_message(botData.token)
 
 if __name__ == "__main__":
