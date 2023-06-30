@@ -1,18 +1,36 @@
 import asyncio, discord, sys, botData
 
 class SingleMessageSender(discord.Client):
-    def __init__(self, message, channel_id):
+    def __init__(self, message, channel_id, reply_id):
         # Intents passed don't really matter as we don't connect to the gateway
-        super().__init__(intents=discord.Intents.default())
+        super().__init__(intents=discord.Intents.all())
 
         self.message = message
         self.channel_id = channel_id
+        self.reply_id = reply_id
 
     async def send_message(self, token):
         await self.login(token)  # Ensure the internal HTTP client is initialized with a token
 
         channel = await self.fetch_channel(self.channel_id)
-        await channel.send(self.message)
+        warning = f"""\
+replyto: {self.reply_id}
+channel: {channel.name}
+message text:
+{self.message}\n
+proceed? [y/n]\n"""
+        if input(warning) != 'y':
+            await self.close()
+            return
+        
+        if self.reply_id:
+            try:
+                msg = await channel.fetch_message(self.reply_id)
+                await msg.reply(self.message)
+            except:
+                print("invalid message-channel combination")
+        else:
+            await channel.send(self.message)
 
         await self.close()  # Close the HTTP client again
 
@@ -28,20 +46,24 @@ def parse_args(argv):
         elif curr_arg == "-m":
             msg = argv.pop(0)
         elif curr_arg == "-r":
-            reply = find_msg(argv.pop(0))
+            reply = argv.pop(0)
+    print(f"parsed: {channel}, {reply}, {msg}")
     return (channel, msg, reply)
 
 def get_channel(path):
-    return 1011851229716037722 if path == "channel5" else 999415862069039144
+    if path == "channel2": return 999415862069039144
+    elif path == "channel5": return 1011851229716037722
+    elif path.isdigit():
+        return path
+    else:
+        print(f"could not retrieve channel from {path}")
+        return None
     # TODO: add the rest of the path parser here, and then document
     # how path input should work
 
-def find_msg(id):
-    return None
-
 async def main():
     (channel, msg, reply) = parse_args(sys.argv)
-    client = SingleMessageSender(msg, channel)
+    client = SingleMessageSender(msg, channel, reply)
     await client.send_message(botData.token)
 
 if __name__ == "__main__":
