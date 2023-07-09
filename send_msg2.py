@@ -40,14 +40,17 @@ def parse_args(argv):
     while argv:
         curr_arg = argv.pop(0)
         # stops the count before we try to parse a missing arg
-        if not argv: return (None, None, None)
+        if curr_arg == "-h":
+            print("usage: python send_msg2.py [-m <message> | -c <channel] [-r <reply_id>]")
+            return 2
+
+        elif not argv: return (None, None, None)
         elif curr_arg == "-c":
             channel = get_channel(argv.pop(0))
         elif curr_arg == "-m":
             msg = argv.pop(0)
         elif curr_arg == "-r":
             reply = argv.pop(0)
-    print(f"parsed: {channel}, {reply}, {msg}")
     return (channel, msg, reply)
 
 def get_channel(path):
@@ -62,7 +65,9 @@ def get_channel(path):
     # how path input should work
 
 async def main():
-    (channel, msg, reply) = parse_args(sys.argv)
+    args = parse_args(sys.argv)
+    if args == 2: return
+    (channel, msg, reply) = args
     client = SingleMessageSender(msg, channel, reply)
     await client.send_message(botData.token)
 
